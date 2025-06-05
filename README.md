@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TMB-Challenge-Web
 
-## Getting Started
+Este projeto é o Front-End do desafio técnico para TMB,
+Os detalhes do desafio podem ser vistos no arquivo [POC-TMB](https://github.com/guiriosoficial/TMB-Challenge-Web/blob/main/POC-TMB.pdf)
 
-First, run the development server:
+**BACK END**
+- O Back end deste projeto está disponível em [TMB-Challenge-Api](https://github.com/guiriosoficial/TMB-Challenge-Api)
 
+## Pré-requisitos
+
+Antes de começar, certifique-se de ter os seguintes componentes instalados:
+
+- [Node e NPM](https://nodejs.org/en) (Versão 22)
+
+## Configuração do Projeto
+
+1. **Clone o Repositório**:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:guiriosoficial/TMB-Challenge-Api.git
+cd TMB-Challenge-Api
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Endenda a Estrutura do Projeto**:
+```
+/public             -> Arquivos estáticos que são servidos diretamente, como imagens, fontes e outros recursos estáticos.      
+/src                -> Diretório principal do código-fonte da aplicação.
+  /app              -> Estrutura de rotas e páginas da aplicação, incluindo arquivos de layout e componentes de página.
+  /components       -> Componentes reutilizáveis que podem ser usados em várias partes do aplicativo.
+    /ui             -> Componentes de interface do usuário, como botões, inputs e outros elementos visuais.
+    /dialogs        -> Componentes de diálogo/modais que são usados para interações e notificações ao usuário.
+  /enums            -> Tipos enumerados que são usados em todo o aplicativo para representar valores constantes.
+  /lib              -> Bibliotecas e utilitários personalizados que fornecem funcionalidades auxiliares.
+  /models           -> Classes de modelo que representam a estrutura dos dados manipulados pelo aplicativo.
+  /services         -> Lógica de negócios do aplicativo e consultas a API, organizada em serviços.
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Defina as Variaveis de Ambiente**
+- Crie um arquivo `.env` ou `.env.local` na raiz do projeto
+- Atualize o arquivo com as variaveis necessárias
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+API_BASE_URL="http://localhost:5022/api"
+WS_BASE_URL="ws://localhost:5022/ws"
+```
 
-## Learn More
+## Execute o Projeto
+1. **Instale as Dependências**:
+```bash
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Compile o Projeto**:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Execute o Projeto**:
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Abra o Projeto**:
+- Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
