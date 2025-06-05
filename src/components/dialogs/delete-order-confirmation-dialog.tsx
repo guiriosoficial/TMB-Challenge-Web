@@ -10,17 +10,18 @@ import {
 } from "@/components/ui/alert-dialog"
 
 interface IConfirmationDialog {
+  orderId: string | null
   open: boolean
   onConfirm: () => void
   onCancel: () => void
 }
 
-export function DeleteOrderConfirmationDialog({ open, onConfirm, onCancel }: IConfirmationDialog) {
+export function DeleteOrderConfirmationDialog({ orderId = '', open, onConfirm, onCancel }: IConfirmationDialog) {
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Tem certeza que deseja excluir este pedido?</AlertDialogTitle>
+          <AlertDialogTitle>Tem certeza que deseja excluir o pedido {orderId}?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta ação não pode ser desfeita
           </AlertDialogDescription>

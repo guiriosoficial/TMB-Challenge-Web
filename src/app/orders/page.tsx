@@ -1,15 +1,15 @@
 "use client"
 
-import { useCallback, useState} from "react"
-import { Plus} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import OrdersTable from "@/components/tables/orders-table"
-import type { IOrder } from "@/app/models/order-model"
+import { OrdersTable } from "@/components/tables/orders-table"
 import { CreateEditOrderDialog } from "@/components/dialogs/create-edit-order-dialog"
-import OrderStatus from "../enums/order-status-enum"
-import { IOrderForm } from "../models/order-form-model"
 import { DeleteOrderConfirmationDialog } from "@/components/dialogs/delete-order-confirmation-dialog"
+import { Plus } from "lucide-react"
+import type { IOrder } from "@/models/order-model"
+import { useCallback, useState} from "react"
+import OrderStatus from "@/enums/order-status-enum"
+import type OrderForm from "@/models/order-form-model"
 
 const data: IOrder[] = [
   {
@@ -57,11 +57,12 @@ const data: IOrder[] = [
 export default function DataTableDemo() {  
   const [isCreateOrderDialogOpen, setIsCreateOrderDialogOpen] = useState<boolean>(false)
   const [orderToDelete, setOrderToDelete] = useState<string | null>(null)
-  const [orderToEdit, setOrderToEdit] = useState<IOrder | undefined>(undefined)
+  const [orderToEdit, setOrderToEdit] = useState<IOrder | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   const handleToggleCreateOrderDialog = useCallback(() => {
     setIsCreateOrderDialogOpen((value) => !value)
-    if (!isCreateOrderDialogOpen) setOrderToEdit(undefined)
+    if (!isCreateOrderDialogOpen) setOrderToEdit(null)
   }, [isCreateOrderDialogOpen])
 
   const handleStartDeleteOrder = useCallback((orderId: string) => {
@@ -82,25 +83,25 @@ export default function DataTableDemo() {
   }, [])
 
   const handleCancelCreateEditOrder = useCallback(() => {
-    setOrderToEdit(undefined)
+    setOrderToEdit(null)
     setIsCreateOrderDialogOpen(false)
   }, [])
 
-  const handleConfirmCreateEditOrder = useCallback((data: IOrderForm) => {
+  const handleConfirmCreateEditOrder = useCallback((data: OrderForm) => {
     console.log(data);
   }, [])
+
+
 
   return (
     <>
       <div className="p-4">
         <div className="flex justify-between items-center py-4">
           <Input
-            placeholder="Buscar por cliente, produto ou valor..."
-            // value={(table.getColumn("cliente")?.getFilterValue() as string) ?? ""}
-            // onChange={(event) =>
-            //   table.getColumn("cliente")?.setFilterValue(event.target.value)
-            // }
             className="max-w-sm"
+            placeholder="Buscar por cliente, produto ou valor..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Button onClick={handleToggleCreateOrderDialog}>
             <Plus />
@@ -109,6 +110,8 @@ export default function DataTableDemo() {
         </div>
         <OrdersTable
           data={data}
+          searchTerm={searchTerm}
+          onChangeSearchTerm={setSearchTerm}
           onDeleteOrder={handleStartDeleteOrder}
           onEditOrder={handleStartEditOrder}
         />
@@ -116,6 +119,7 @@ export default function DataTableDemo() {
 
       <DeleteOrderConfirmationDialog
         open={Boolean(orderToDelete)}
+        orderId={orderToDelete}
         onConfirm={handleConfirmDeleteOrder}
         onCancel={handleCancelDeleteOrder}
       />

@@ -1,5 +1,7 @@
 "use client"
-import * as React from "react"
+
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   Column,
   ColumnDef,
@@ -18,11 +20,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ArrowUpDown, Trash, Eye, Pencil, MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-} from "@/components/ui/card"
 import {
   Tooltip,
   TooltipContent,
@@ -36,27 +33,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  ArrowUpDown,
+  Trash,
+  Eye,
+  Pencil,
+  MoreHorizontal
+} from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useCallback } from "react"
-import type { IOrder } from "@/app/models/order-model"
+import { useCallback, useState } from "react"
+import type OrderModel from "@/models/order-model"
 import { formatCurrency } from "@/lib/utils"
 
 interface IOrdersTable {
-  data: IOrder[]
+  data: OrderModel[]
+  searchTerm: string
+  onChangeSearchTerm: (value: string) => void
   onDeleteOrder: (orderId: string) => void
-  onEditOrder: (order: IOrder) => void
+  onEditOrder: (order: OrderModel) => void
 }
 
-export default function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) {
+export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) {
   const router = useRouter()
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const handleGoToDetails = useCallback((order: IOrder) => {
+  const handleGoToDetails = useCallback((order: OrderModel) => {
     router.push(`/orders/${order.id}`)
   }, [router])
 
-  const orderHeader = useCallback((column: Column<IOrder>) => {
+  const orderHeader = useCallback((column: Column<OrderModel>) => {
     return (
       <div className="flex gap-1 items-center">
         Cliente
@@ -71,7 +77,47 @@ export default function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrder
     )
   }, [])
 
-  const columns: ColumnDef<IOrder>[] = [
+  const rowActions = useCallback((order: OrderModel) => {
+    return (
+      <div className="flex justify-center">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              onClick={() => handleGoToDetails(order)}
+            >
+              <Eye />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            Ver detalhes
+          </TooltipContent>
+        </Tooltip>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEditOrder(order)}>
+              <Pencil />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onDeleteOrder(order.id)}
+              variant="destructive"
+            >
+              <Trash />
+              Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    )
+  }, [handleGoToDetails, onDeleteOrder, onEditOrder])
+
+  const columns: ColumnDef<OrderModel>[] = [
     {
       accessorKey: "cliente",
       header: ({ column }) => orderHeader(column)
@@ -95,46 +141,8 @@ export default function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrder
     },
     {
       id: "actions",
-      header: 'Ações',
-      cell: ({ row }) => {
-        return (
-          <>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleGoToDetails(row.original)}
-                >
-                  <Eye />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Ver detalhes
-              </TooltipContent>
-            </Tooltip>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost">
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEditOrder(row.original)}>
-                  <Pencil />
-                  Editar
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onDeleteOrder(row.original.id)}
-                  variant="destructive"
-                >
-                  <Trash />
-                  Excluir
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        )
-      },
+      header: () => <div className="text-center">Ações</div>,
+      cell: ({ row }) => rowActions(row.original),
     },
   ]
 
@@ -177,10 +185,7 @@ export default function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrder
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+              <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(

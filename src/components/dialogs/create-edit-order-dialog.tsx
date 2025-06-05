@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -6,12 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { IOrderForm } from "@/app/models/order-form-model"
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { useEffect } from "react";
-import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -20,25 +15,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import OrderFormModel from "@/app/models/order-form-model";
-import OrderModel from "@/app/models/order-model";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { z } from "zod"
+import OrderFormModel from "@/models/order-form-model"
+import type OrderModel from "@/models/order-model"
 
-interface IOrderDialog {
-  readonly order?: OrderModel
+interface ICreateEditOrderDialog {
+  readonly order: OrderModel | null
   readonly open: boolean
   readonly onCancel: () => void
-  readonly onConfirm: (data: IOrderForm) => void
+  readonly onConfirm: (data: OrderFormModel) => void
 }
 
 const formSchema = z.object({
-  cliente: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  cliente: z.string(),
   produto: z.string(),
   valor: z.number()
 })
 
-export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: IOrderDialog) {
+export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: ICreateEditOrderDialog) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: new OrderFormModel(order?.cliente, order?.produto, order?.valor),
@@ -60,7 +57,10 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: IOrd
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onConfirm)}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={form.handleSubmit(onConfirm)}
+          >
             <FormField
               control={form.control}
               name="cliente"
@@ -68,7 +68,7 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: IOrd
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,7 +81,7 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: IOrd
                 <FormItem>
                   <FormLabel>Produto</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,7 +94,7 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: IOrd
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
