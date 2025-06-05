@@ -35,14 +35,13 @@ cd TMB-Challenge-Api
 ```
 
 3. **Defina as Variaveis de Ambiente**
-- Crie um arquivo `.env` ou `.env.local` na raiz do projeto
-- Atualize o arquivo com as variaveis necessárias
-
-```bash
-# Por Padrão, a API é executada na porta 5000
-API_BASE_URL="http://localhost:5000/api"
-WS_BASE_URL="ws://localhost:5000/ws"
-```
+  - Crie um arquivo `.env` ou `.env.local` na raiz do projeto
+  - Atualize o arquivo com as variaveis necessárias
+    ```bash
+    # Por Padrão, a API é executada na porta 5000
+    API_BASE_URL="http://localhost:5000/api"
+    WS_BASE_URL="ws://localhost:5000/ws"
+    ```
 
 ## Execute o Projeto
 1. **Instale as Dependências**:
