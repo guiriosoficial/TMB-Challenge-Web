@@ -10,7 +10,7 @@ enum HTTPVerbs {
   DELETE = 'DELETE',
 }
 
-const apiBaseUrl = process.env.API_BASE_URL ?? 'http://localhost:5022/api'
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:5000/api'
 
 const createApiClient = (baseUrl: string) => {
   const request = async (url: string, method: string, options: RequestOptions = {}) => {

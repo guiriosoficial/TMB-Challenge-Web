@@ -39,8 +39,8 @@ cd TMB-Challenge-Api
   - Atualize o arquivo com as variaveis necessárias
     ```bash
     # Por Padrão, a API é executada na porta 5000
-    API_BASE_URL="http://localhost:5000/api"
-    WS_BASE_URL="ws://localhost:5000/ws"
+    NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
+    NEXT_PUBLIC_WS_BASE_URL="ws://localhost:5000/ws"
     ```
 
 ## Execute o Projeto
