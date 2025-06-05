@@ -1,5 +1,6 @@
 "use client"
 
+import { StatusTag } from "@/components/ui/status-tag"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -44,6 +45,7 @@ import { useRouter } from "next/navigation"
 import { useCallback, useState } from "react"
 import type OrderModel from "@/models/order-model"
 import { formatCurrency } from "@/lib/utils"
+import dayjs from "dayjs"
 
 interface IOrdersTable {
   data: OrderModel[]
@@ -62,10 +64,14 @@ export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) 
     router.push(`/orders/${order.id}`)
   }, [router])
 
-  const orderHeader = useCallback((column: Column<OrderModel>) => {
+  const formatDate = useCallback((dateTime: Date) => {
+    return dayjs(dateTime).format('DD/MM/YYYY [ás] HH:mm')
+  }, [ ])
+
+  const orderHeader = useCallback((column: Column<OrderModel>, name: string) => {
     return (
       <div className="flex gap-1 items-center">
-        Cliente
+        {name}
         <Button
           variant="ghost"
           size="icon"
@@ -79,7 +85,7 @@ export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) 
 
   const rowActions = useCallback((order: OrderModel) => {
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-center w-8">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -120,28 +126,31 @@ export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) 
   const columns: ColumnDef<OrderModel>[] = [
     {
       accessorKey: "cliente",
-      header: ({ column }) => orderHeader(column)
+      header: ({ column }) => orderHeader(column, 'Cliente')
       ,
     },
     {
       accessorKey: "produto",
-      header: ({ column }) => orderHeader(column),
+      header: ({ column }) => orderHeader(column, 'Produto'),
     },
     {
       accessorKey: "valor",
-      header: ({ column }) => orderHeader(column),
+      header: ({ column }) => orderHeader(column, 'Valor'),
       cell: ({ row }) => formatCurrency(row.getValue("valor")),
     },
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("status")}</div>
-      ),
+      cell: ({ row }) => <StatusTag status={row.getValue('status')} />,
+    },
+    {
+      accessorKey: "dataCriacao",
+      header: ({ column }) => orderHeader(column, 'Data de criação'),
+      cell: ({ row }) => formatDate(row.getValue('dataCriacao'))
     },
     {
       id: "actions",
-      header: () => <div className="text-center">Ações</div>,
+      header: () => <div className="text-center w-8">Ações</div>,
       cell: ({ row }) => rowActions(row.original),
     },
   ]

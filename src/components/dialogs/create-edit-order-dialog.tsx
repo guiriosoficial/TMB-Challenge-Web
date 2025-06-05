@@ -30,18 +30,18 @@ interface ICreateEditOrderDialog {
 }
 
 const formSchema = z.object({
-  cliente: z.string(),
-  produto: z.string(),
-  valor: z.number()
+  cliente: z.string().min(2, { message: 'Deve ter no mínimo 2 caracteres' }),
+  produto: z.string().min(2, { message: 'Deve ter no mínimo 2 caracteres' }),
+  valor: z.coerce.number()
 })
 
 export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: ICreateEditOrderDialog) {
+  const isEditing = order?.id
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: new OrderFormModel(order?.cliente, order?.produto, order?.valor),
   })
-
-  const isEditing = order?.id
 
   useEffect(() => {
     form.setValue('cliente', order?.cliente ?? '')
@@ -94,7 +94,10 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: ICre
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      type="number"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
