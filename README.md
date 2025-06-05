@@ -16,8 +16,8 @@ Antes de começar, certifique-se de ter os seguintes componentes instalados:
 
 1. **Clone o Repositório**:
 ```bash
-git clone git@github.com:guiriosoficial/TMB-Challenge-Api.git
-cd TMB-Challenge-Api
+git clone git@github.com:guiriosoficial/TMB-Challenge-Web.git
+cd TMB-Challenge-Web
 ```
 
 2. **Endenda a Estrutura do Projeto**:
