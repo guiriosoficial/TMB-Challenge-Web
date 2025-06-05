@@ -3,6 +3,7 @@
 import { StatusTag } from "@/components/ui/status-tag"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Skeleton } from "../../../components/ui/skeleton"
 import {
   Column,
   ColumnDef,
@@ -50,12 +51,13 @@ import dayjs from "dayjs"
 interface IOrdersTable {
   data: OrderModel[]
   searchTerm: string
+  loading: boolean
   onChangeSearchTerm: (value: string) => void
   onDeleteOrder: (orderId: string) => void
   onEditOrder: (order: OrderModel) => void
 }
 
-export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) {
+export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrdersTable) {
   const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -196,12 +198,16 @@ export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) 
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
+                  loading
+                    ? <Skeleton key={cell.id} />
+                    : (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )
                 ))}
               </TableRow>
             ))
@@ -211,7 +217,7 @@ export function OrdersTable({ data, onEditOrder, onDeleteOrder }: IOrdersTable) 
                 colSpan={columns.length}
                 className="h-24 text-center"
               >
-                No results.
+                Nenhum pedido encontrado.
               </TableCell>
             </TableRow>
           )}

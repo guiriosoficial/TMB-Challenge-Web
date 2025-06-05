@@ -14,7 +14,7 @@ import {
 import { useCallback, useState, useEffect } from "react";
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from "lucide-react";
-import { ordersService } from "@/serices/orders";
+import { ordersService } from "@/services/orders";
 import socket from '@/lib/ws'
 import { CreateEditOrderDialog } from "@/components/dialogs/create-edit-order-dialog";
 import type Order from "@/models/order-model";
@@ -127,6 +127,7 @@ export default function OrderDetailsPage() {
       {isEditingOrder && <CreateEditOrderDialog
         open={isEditingOrder}
         order={data}
+        loading={isLoading}
         onConfirm={handleConfirmEditOrder}
         onCancel={handleToggleIsEditingOrder}
       />}

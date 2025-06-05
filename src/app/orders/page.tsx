@@ -9,14 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { OrdersTable } from "@/components/tables/orders-table"
+import { OrdersTable } from "@/app/orders/(tables)/orders-table"
 import { CreateEditOrderDialog } from "@/components/dialogs/create-edit-order-dialog"
 import { DeleteOrderConfirmationDialog } from "@/components/dialogs/delete-order-confirmation-dialog"
 import { Plus } from "lucide-react"
 import { useCallback, useState, useEffect} from "react"
 import Order from "@/models/order-model"
 import type OrderForm from "@/models/order-form-model"
-import { ordersService } from "@/serices/orders"
+import { ordersService } from "@/services/orders"
 import socket from '@/lib/ws'
 import OrderStatus from "@/enums/order-status-enum"
 
@@ -157,6 +157,7 @@ export default function OrdersListPage() {
         <OrdersTable
           data={data}
           searchTerm={searchTerm}
+          loading={isLoading}
           onChangeSearchTerm={setSearchTerm}
           onDeleteOrder={handleStartDeleteOrder}
           onEditOrder={handleStartEditOrder}
@@ -166,6 +167,7 @@ export default function OrdersListPage() {
       {Boolean(orderToDelete) && <DeleteOrderConfirmationDialog
         open={Boolean(orderToDelete)}
         orderId={orderToDelete}
+        loading={isLoading}
         onConfirm={handleConfirmDeleteOrder}
         onCancel={handleStopDeleteOrder}
       />}
@@ -173,6 +175,7 @@ export default function OrdersListPage() {
       {(isCreateOrderDialogOpen || Boolean(orderToEdit?.id)) &&<CreateEditOrderDialog
         open={isCreateOrderDialogOpen || Boolean(orderToEdit?.id)}
         order={orderToEdit}
+        loading={isLoading}
         onConfirm={handleConfirmCreateEditOrder}
         onCancel={handleStopCreateEditOrder}
       />}

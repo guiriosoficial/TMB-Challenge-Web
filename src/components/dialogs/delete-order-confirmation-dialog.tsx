@@ -8,15 +8,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
+import { Loader2Icon } from "lucide-react"
 interface IConfirmationDialog {
-  orderId: string | null
-  open: boolean
-  onConfirm: () => void
-  onCancel: () => void
+  readonly orderId: string | null
+  readonly open: boolean
+  readonly loading: boolean
+  readonly onConfirm: () => void
+  readonly onCancel: () => void
 }
 
-export function DeleteOrderConfirmationDialog({ orderId = '', open, onConfirm, onCancel }: IConfirmationDialog) {
+export function DeleteOrderConfirmationDialog({ orderId = '', open, loading, onConfirm, onCancel }: IConfirmationDialog) {
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
@@ -27,8 +28,19 @@ export function DeleteOrderConfirmationDialog({ orderId = '', open, onConfirm, o
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+          <AlertDialogCancel
+            disabled={loading}
+            onClick={onCancel}
+          >
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            disabled={loading}
+            onClick={onConfirm}
+          >
+            {loading && <Loader2Icon className="animate-spin" />}
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -18,6 +18,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
+import { Loader2Icon } from "lucide-react"
 import { z } from "zod"
 import OrderFormModel from "@/models/order-form-model"
 import type OrderModel from "@/models/order-model"
@@ -25,6 +26,7 @@ import type OrderModel from "@/models/order-model"
 interface ICreateEditOrderDialog {
   readonly order: OrderModel | null
   readonly open: boolean
+  readonly loading: boolean
   readonly onCancel: () => void
   readonly onConfirm: (data: OrderFormModel) => void
 }
@@ -35,7 +37,7 @@ const formSchema = z.object({
   valor: z.coerce.number()
 })
 
-export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: ICreateEditOrderDialog) {
+export function CreateEditOrderDialog({ order, open, loading, onCancel, onConfirm }: ICreateEditOrderDialog) {
   const isEditing = order?.id
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -109,14 +111,17 @@ export function CreateEditOrderDialog({ order, open, onCancel, onConfirm }: ICre
         <DialogFooter>
           <Button
             variant="outline"
+            disabled={loading}
             onClick={onCancel}
           >
             Cancelar
           </Button>
           <Button
             type="submit"
+            disabled={loading}
             onClick={form.handleSubmit(onConfirm)}
           >
+            {loading && <Loader2Icon className="animate-spin" />}
             Salvar
           </Button>
         </DialogFooter>
