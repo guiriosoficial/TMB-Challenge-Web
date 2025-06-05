@@ -38,9 +38,10 @@ cd TMB-Challenge-Api
 - Crie um arquivo `.env` ou `.env.local` na raiz do projeto
 - Atualize o arquivo com as variaveis necessárias
 
-```
-API_BASE_URL="http://localhost:5022/api"
-WS_BASE_URL="ws://localhost:5022/ws"
+```bash
+# Por Padrão, a API é executada na porta 5000
+API_BASE_URL="http://localhost:5000/api"
+WS_BASE_URL="ws://localhost:5000/ws"
 ```
 
 ## Execute o Projeto
@@ -60,4 +61,5 @@ npm run dev
 ```
 
 4. **Abra o Projeto**:
+- Por padrão, o app ira ser executado na porta 3000
 - Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
