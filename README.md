@@ -72,7 +72,7 @@ docker build -t tmb-challenge-web .
 docker run -p 3000:3000 tmb-challenge-web
 ```
 
-- Voce pode passar as varáveis de ambiente `NEXT_PUBLIC_API_BASE_URL` e `NEXT_PUBLIC_WS_BASE_URL` para alterar o endereço do Back-End em outros ambientes utilizando o parametro `-e <VAR_NAME>=<VAR_VALUE>`
+- Você pode passar as variáveis de ambiente `NEXT_PUBLIC_API_BASE_URL` e `NEXT_PUBLIC_WS_BASE_URL` para alterar o endereço do Back-End em outros ambientes utilizando o parâmetro `-e <VAR_NAME>=<VAR_VALUE>`
 
 ## Abra o Projeto
 - Por padrão, o app irá ser executado na porta 3000.
