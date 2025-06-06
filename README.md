@@ -1,10 +1,10 @@
 # TMB-Challenge-Web
 
-Este projeto é o Front-End do desafio técnico para TMB,
+Este projeto é o Front-End do desafio técnico para TMB.
 Os detalhes do desafio podem ser vistos no arquivo [POC-TMB](https://github.com/guiriosoficial/TMB-Challenge-Web/blob/main/POC-TMB.pdf)
 
 **BACK END**
-- O Back end deste projeto está disponível em [TMB-Challenge-Api](https://github.com/guiriosoficial/TMB-Challenge-Api)
+- O Back-End deste projeto está disponível em [TMB-Challenge-Api](https://github.com/guiriosoficial/TMB-Challenge-Api)
 
 ## Pré-requisitos
 
@@ -20,7 +20,7 @@ git clone git@github.com:guiriosoficial/TMB-Challenge-Web.git
 cd TMB-Challenge-Web
 ```
 
-2. **Endenda a Estrutura do Projeto**:
+2. **Entenda a Estrutura do Projeto**:
 ```
 /public             -> Arquivos estáticos que são servidos diretamente, como imagens, fontes e outros recursos estáticos.      
 /src                -> Diretório principal do código-fonte da aplicação.
@@ -35,8 +35,8 @@ cd TMB-Challenge-Web
 ```
 
 3. **Defina as Variaveis de Ambiente**
-  - Crie um arquivo `.env` ou `.env.local` na raiz do projeto
-  - Atualize o arquivo com as variaveis necessárias
+  - Crie um arquivo `.env` ou `.env.local` na raiz do projeto.
+  - Atualize o arquivo com as variáveis necessárias:
     ```bash
     # Por Padrão, a API é executada na porta 5000
     NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
@@ -60,13 +60,13 @@ npm run dev
 ```
 
 4. **Abra o Projeto**:
-- Por padrão, o app ira ser executado na porta 3000
+- Por padrão, o app irá ser executado na porta 3000.
 - Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
 
 ### TODO
-- Remover tratativa de Enum StatusOrder do Front
+- Remover tratativa de Enum StatusOrder do Front-End
 - Implementar Máscara monetária no dialog de Adiciona/Editar pedidos
-- Implementar icone de loading na tag de status quando estiver processando
+- Implementar ícone de loading na tag de status quando estiver processando
 - Implementar filtro por status
 - Implementar campo de busca
 - Implementar paginação
