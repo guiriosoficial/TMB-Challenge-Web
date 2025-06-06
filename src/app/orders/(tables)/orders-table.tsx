@@ -213,7 +213,7 @@ export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrde
                 colSpan={columns.length}
                 className="h-24 text-center"
               >
-                Nenhum pedido encontrado.
+                {loading ? 'Buscando pedidos...' : 'Nenhum pedido encontrado.'}
               </TableCell>
             </TableRow>
           )}
