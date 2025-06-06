@@ -37,13 +37,14 @@ cd TMB-Challenge-Web
 3. **Defina as Variaveis de Ambiente**
   - Crie um arquivo `.env` ou `.env.local` na raiz do projeto.
   - Atualize o arquivo com as variáveis necessárias:
-    ```bash
-    # Por Padrão, a API é executada na porta 5000
-    NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
-    NEXT_PUBLIC_WS_BASE_URL="ws://localhost:5000/ws"
-    ```
+```bash
+# Por Padrão, a API é executada na porta 5000
+NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
+NEXT_PUBLIC_WS_BASE_URL="ws://localhost:5000/ws"
+```
 
 ## Execute o Projeto
+
 1. **Instale as Dependências**:
 ```bash
 npm install
@@ -59,7 +60,21 @@ npm run build
 npm run dev
 ```
 
-4. **Abra o Projeto**:
+## Via Docker
+
+1. **Crie a Imagem**:
+```bash
+docker build -t tmb-challenge-web .
+```
+
+2. **Inicie o Container**:
+```bash
+docker run -p 3000:3000 tmb-challenge-web
+```
+
+- Voce pode passar as varáveis de ambiente `NEXT_PUBLIC_API_BASE_URL` e `NEXT_PUBLIC_WS_BASE_URL` para alterar o endereço do Back-End em outros ambientes utilizando o parametro `-e <VAR_NAME>=<VAR_VALUE>`
+
+## Abra o Projeto
 - Por padrão, o app irá ser executado na porta 3000.
 - Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
 
