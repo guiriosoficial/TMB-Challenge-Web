@@ -42,10 +42,11 @@ export default function OrderDetailsPage() {
     }
   }
 
-  const handleOrderStatusUpdate = (evt: MessageEvent) => {
-    if (evt.data.status === data.status) return
-    setData(evt.data)
-  }
+  const handleOrderStatusUpdate = useCallback((evt: MessageEvent) => {
+    const parsedData = JSON.parse(evt.data)
+    if (parsedData.status === data.status) return
+    setData(parsedData)
+  }, [data.status])
 
   useEffect(() => {
     socket.addEventListener('message', handleOrderStatusUpdate);
@@ -53,7 +54,7 @@ export default function OrderDetailsPage() {
     return () => {
       socket.removeEventListener('message', handleOrderStatusUpdate);
     };
-  }, [])
+  }, [handleOrderStatusUpdate])
 
   useEffect(() => {
     fetchData()

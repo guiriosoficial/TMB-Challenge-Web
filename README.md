@@ -62,3 +62,14 @@ npm run dev
 4. **Abra o Projeto**:
 - Por padrão, o app ira ser executado na porta 3000
 - Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
+
+### TODO
+- Remover tratativa de Enum StatusOrder do Front
+- Implementar Máscara monetária no dialog de Adiciona/Editar pedidos
+- Implementar icone de loading na tag de status quando estiver processando
+- Implementar filtro por status
+- Implementar campo de busca
+- Implementar paginação
+- Implementar Skeleton Loading na tabela e nos detalhes do pedido
+- Implementar Toasts de erros
+- Bloquear click fora do modal no loading

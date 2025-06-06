@@ -1,14 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+// import { Input } from "@/components/ui/input"
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select"
 import { OrdersTable } from "@/app/orders/(tables)/orders-table"
 import { CreateEditOrderDialog } from "@/components/dialogs/create-edit-order-dialog"
 import { DeleteOrderConfirmationDialog } from "@/components/dialogs/delete-order-confirmation-dialog"
@@ -18,7 +18,7 @@ import Order from "@/models/order-model"
 import type OrderForm from "@/models/order-form-model"
 import { ordersService } from "@/services/orders"
 import socket from '@/lib/ws'
-import OrderStatus from "@/enums/order-status-enum"
+// import OrderStatus from "@/enums/order-status-enum"
 
 export default function OrdersListPage() {  
   const [isCreateOrderDialogOpen, setIsCreateOrderDialogOpen] = useState<boolean>(false)
@@ -26,22 +26,39 @@ export default function OrdersListPage() {
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [data, setData] = useState<Order[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false)
+  const [isLoadingOrder, setIsLoadingOrder] = useState<boolean>(false)
+
+  const handleUpdatedOrder = useCallback((order: Order) => {
+    const newData = [...data]
+    const editedItemIndex = newData.findIndex((d) => d.id === order.id)
+    if (editedItemIndex > -1) {
+      newData[editedItemIndex] = order
+      setData(newData)
+    }
+  }, [data])
+
+  const handleCreatedOrder = useCallback((order: Order) => {
+    const newData = [...data, order]
+    setData(newData)
+  }, [data])
+
+  const handleOrderStatusUpdate = useCallback((evt: MessageEvent) => {
+    const parsedData = JSON.parse(evt.data)
+    
+    handleUpdatedOrder(parsedData)
+  }, [handleUpdatedOrder])
 
   const fetchData = async () => {
-    setIsLoading(true)
+    setIsLoadingTable(true)
     try {
       const response = await ordersService.listOrders()
       setData(response)
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false)
+      setIsLoadingTable(false)
     }
-  }
-
-  const handleOrderStatusUpdate = (evt: MessageEvent) => {
-    handleUpdatedOrder(evt.data)
   }
 
   useEffect(() => {
@@ -54,7 +71,7 @@ export default function OrdersListPage() {
     return () => {
       socket.removeEventListener('message', handleOrderStatusUpdate);
     };
-  }, [])
+  }, [handleOrderStatusUpdate])
 
   const handleToggleCreateOrderDialog = useCallback(() => {
     setIsCreateOrderDialogOpen((value) => !value)
@@ -69,8 +86,8 @@ export default function OrdersListPage() {
     setOrderToDelete(null)
   }, [])
 
-  const handleConfirmDeleteOrder = useCallback(async () => {
-    setIsLoading(true)
+  const handleConfirmDeleteOrder = useCallback(async () => {    
+    setIsLoadingOrder(true)
     if (orderToDelete) {
       try {
         await ordersService.deleteOrder(orderToDelete)
@@ -78,7 +95,7 @@ export default function OrdersListPage() {
       } catch (error) {
         console.error(error)
       } finally {
-        setIsLoading(false)
+        setIsLoadingOrder(false)
       }
     }
 
@@ -95,20 +112,8 @@ export default function OrdersListPage() {
     setIsCreateOrderDialogOpen(false)
   }, [])
 
-  const handleCreatedOrder = useCallback((order: Order) => {
-    const newData = [...data, order]
-    setData(newData)
-  }, [data])
-
-  const handleUpdatedOrder = useCallback((order: Order) => {
-    const newData = [...data]
-    const editedItemIndex = newData.findIndex((d) => d.id === order.id)
-    newData[editedItemIndex] = order
-    setData(newData)
-  }, [data])
-
   const handleConfirmCreateEditOrder = useCallback(async (data: OrderForm) => {
-    setIsLoading(true)
+    setIsLoadingOrder(true)
     try {
       if (orderToEdit?.id) {
         const response = await ordersService.updateOrder(orderToEdit.id, data)
@@ -122,7 +127,7 @@ export default function OrdersListPage() {
     } catch (error) {
       console.error(error)
     } finally {
-      setIsLoading(false)
+      setIsLoadingOrder(false)
     }
   }, [handleCreatedOrder, handleStopCreateEditOrder, handleUpdatedOrder, orderToEdit?.id])
 
@@ -132,7 +137,7 @@ export default function OrdersListPage() {
         <div className="flex justify-between items-center mb-4">
         <h1 className="font-bold text-2xl">Pedidos</h1>
         <div className="flex gap-4">
-          <Input
+          {/* <Input
             className="max-w-sm"
             placeholder="Buscar por cliente, produto ou valor..."
             value={searchTerm}
@@ -147,7 +152,7 @@ export default function OrdersListPage() {
                 <SelectItem key={status[0]} value={status[0]}>{status[1]}</SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           <Button onClick={handleToggleCreateOrderDialog}>
             <Plus />
             Adicionar
@@ -157,7 +162,7 @@ export default function OrdersListPage() {
         <OrdersTable
           data={data}
           searchTerm={searchTerm}
-          loading={isLoading}
+          loading={isLoadingTable}
           onChangeSearchTerm={setSearchTerm}
           onDeleteOrder={handleStartDeleteOrder}
           onEditOrder={handleStartEditOrder}
@@ -167,7 +172,7 @@ export default function OrdersListPage() {
       {Boolean(orderToDelete) && <DeleteOrderConfirmationDialog
         open={Boolean(orderToDelete)}
         orderId={orderToDelete}
-        loading={isLoading}
+        loading={isLoadingOrder}
         onConfirm={handleConfirmDeleteOrder}
         onCancel={handleStopDeleteOrder}
       />}
@@ -175,7 +180,7 @@ export default function OrdersListPage() {
       {(isCreateOrderDialogOpen || Boolean(orderToEdit?.id)) &&<CreateEditOrderDialog
         open={isCreateOrderDialogOpen || Boolean(orderToEdit?.id)}
         order={orderToEdit}
-        loading={isLoading}
+        loading={isLoadingOrder}
         onConfirm={handleConfirmCreateEditOrder}
         onCancel={handleStopCreateEditOrder}
       />}
