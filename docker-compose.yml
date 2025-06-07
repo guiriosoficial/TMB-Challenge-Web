@@ -1,0 +1,67 @@
+name: tmb-challenge
+
+services:
+  db:
+    container_name: tmb-challenge-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${DB_NAME:-TmbDb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+    profiles: ["migrator", "app"]
+
+  migrator:
+    container_name: tmb-challenge-migrator
+    image: mcr.microsoft.com/dotnet/sdk:9.0-alpine
+    build:
+      context: ../TMB-Challenge-Api
+      dockerfile: Dockerfile
+      target: build
+    command: >
+      /bin/sh -c "
+        dotnet ef database update --project /app/TMB-Challenge.csproj --startup-project /app/TMB-Challenge.csproj --connection ${ConnectionStrings__DefaultConnection}
+      "
+    volumes:
+      - ../TMB-Challenge-Web:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["migrator"]
+
+  api:
+    container_name: tmb-challenge-api
+    build:
+      context: ../TMB-Challenge-Api
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5000:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      AzureServiceBus__ConnectionString: ${AzureServiceBus__ConnectionString}
+      AzureServiceBus__QueueName: ${AzureServiceBus__QueueName}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["migrator", "app"]
+
+  app:
+    container_name: tmb-challenge-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:5000/api}
+      NEXT_PUBLIC_WS_BASE_URL: ${NEXT_PUBLIC_WS_BASE_URL:-ws://localhost:5000/ws}
+
+volumes:
+  db_data:

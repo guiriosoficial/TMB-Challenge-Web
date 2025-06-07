@@ -43,7 +43,7 @@ NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
 NEXT_PUBLIC_WS_BASE_URL="ws://localhost:5000/ws"
 ```
 
-## Execute o Projeto
+## Execute o Projeto Manualmente
 
 1. **Instale as Dependências**:
 ```bash
@@ -60,19 +60,58 @@ npm run build
 npm run dev
 ```
 
-## Via Docker
+## Execute o Projeto com Docker
 
-1. **Crie a Imagem**:
+1. **Na Primeira Execução**:
 ```bash
-docker build -t tmb-challenge-web .
+docker compose up --build
+# Isso fará o Build do Projeto, utilize sempre que fizer alterações
 ```
 
-2. **Inicie o Container**:
+2. **Demais Execuções**:
 ```bash
-docker run -p 3000:3000 tmb-challenge-web
+docker compose up
+# Apenas inicia o container
 ```
 
-- Você pode passar as variáveis de ambiente `NEXT_PUBLIC_API_BASE_URL` e `NEXT_PUBLIC_WS_BASE_URL` para alterar o endereço do Back-End em outros ambientes utilizando o parâmetro `-e <VAR_NAME>=<VAR_VALUE>`
+3. **Back-end**:
+  - Caso queira iniciar o Back-end, clone o projeto em um diretório irmão.
+    ```bash
+    # Assumindo que você está dentro do projeto TMB-Challenge-Web
+    git clone https://github.com/guiriosoficial/TMB-Challenge-Api ../
+    ```
+
+  - Adicione as variáveis de ambiente necessárias ao `.env`.
+    ```bash
+    DB_NAME=<DB_NAME>
+    DB_USERNAME=<DB_USERNAME>
+    DB_PASSWORD=<DB_PASSWORD>
+    DB_HOST=db
+    DB_PORT=5432
+
+    ConnectionStrings__DefaultConnection="Host=${DB_HOST}$;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}""
+    AzureServiceBus__ConnectionString=<AZURE_SERVICEBUS_CONNECTION_STRING>
+    AzureServiceBus__QueueName=<AZURE_SERVICEBUS_QUEUE_NAME>
+    ```
+  
+  - Substitua `<DB_NAME>`, `<DB_USERNAME>` e `<DB_PASSWORD>` pelo nome do banco de dados, nome de usuário e senha respectivamente.
+  - Substitua `<AZURE_SERVICEBUS_QUEUE_NAME>` pelo nome da sua fila no Azure Service Bus.
+  - Substitua `AZURE_SERVICEBUS_CONNECTION_STRING` pela cadeia de conexão da sua fila.
+    ```bash
+    # Exemplo de AZURE_SERVICEBUS_CONNECTION_STRING
+    "Endpoint=sb://<SEU_NAMESPACE>.servicebus.windows.net/;SharedAccessKeyName=<NOME_DA_CHAVE_DE_ACESSP>;SharedAccessKey=<CHAVE_DE_ACESSO>"
+    ```
+
+  - Utilize o parametro `build` na primeira execução (ou sempre que houverem alterações na api) para compilar o projeto
+  - Utilize o perfil `migrator` na primeira execução (ou sempre que houverem alterações no banco) para aplicar as migrações.
+    ```bash
+    docker compose --profile migrator up --build -d
+    ```
+
+  - Utilize o perfil `app` para iniciar o projeto completo.
+    ```bash
+    docker compose --profile app up -d
+    ```
 
 ## Abra o Projeto
 - Por padrão, o app irá ser executado na porta 3000.
