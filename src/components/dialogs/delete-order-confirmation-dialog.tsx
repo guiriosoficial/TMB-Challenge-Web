@@ -10,19 +10,18 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Loader2Icon } from "lucide-react"
 interface IConfirmationDialog {
-  readonly orderId: string | null
   readonly open: boolean
   readonly loading: boolean
   readonly onConfirm: () => void
   readonly onCancel: () => void
 }
 
-export function DeleteOrderConfirmationDialog({ orderId = '', open, loading, onConfirm, onCancel }: IConfirmationDialog) {
+export function DeleteOrderConfirmationDialog({open, loading, onConfirm, onCancel }: IConfirmationDialog) {
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Tem certeza que deseja excluir o pedido {orderId}?</AlertDialogTitle>
+          <AlertDialogTitle>Tem certeza que deseja excluir o pedido?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta ação não pode ser desfeita
           </AlertDialogDescription>

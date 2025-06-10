@@ -68,7 +68,7 @@ export function CreateEditOrderDialog({ order, open, loading, onCancel, onConfir
               name="cliente"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cliente</FormLabel>
+                  <FormLabel>Cliente*</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -81,7 +81,7 @@ export function CreateEditOrderDialog({ order, open, loading, onCancel, onConfir
               name="produto"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Produto</FormLabel>
+                  <FormLabel>Produto*</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -94,7 +94,7 @@ export function CreateEditOrderDialog({ order, open, loading, onCancel, onConfir
               name="valor"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor</FormLabel>
+                  <FormLabel>Valor*</FormLabel>
                   <FormControl>
                     <Input
                       {...field}

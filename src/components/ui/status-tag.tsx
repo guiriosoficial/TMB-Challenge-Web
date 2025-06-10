@@ -4,7 +4,7 @@ import { CircleCheck } from "lucide-react";
 import OrderStatus from "@/enums/order-status-enum";
 
 interface IStatusTag {
-  status: OrderStatus
+  readonly status: OrderStatus
 }
 
 function StatusTag({ status }: IStatusTag) {

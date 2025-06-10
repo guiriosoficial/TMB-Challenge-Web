@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card"
 import {
   Column,
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -43,24 +42,29 @@ import {
   MoreHorizontal
 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type OrderModel from "@/models/order-model"
 import { formatCurrency } from "@/lib/utils"
 import dayjs from "dayjs"
+import { Skeleton } from "@/components/ui/skeleton"
+import OrderStatus from "@/enums/order-status-enum"
+// import Order from "@/models/order-model"
+// import OrderStatus from "@/enums/order-status-enum"
 
 interface IOrdersTable {
   data: OrderModel[]
   searchTerm: string
+  statusFilter?: OrderStatus
   loading: boolean
-  onChangeSearchTerm: (value: string) => void
   onDeleteOrder: (orderId: string) => void
   onEditOrder: (order: OrderModel) => void
+  onChalgeSearchTerm: (searchTerm: string) => void
 }
 
-export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrdersTable) {
+export function OrdersTable({ data, searchTerm, statusFilter, loading, onEditOrder, onDeleteOrder, onChalgeSearchTerm }: IOrdersTable) {
   const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const handleGoToDetails = useCallback((order: OrderModel) => {
     router.push(`/orders/${order.id}`)
@@ -143,15 +147,18 @@ export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrde
     {
       accessorKey: "status",
       header: "Status",
+      enableGlobalFilter: false,
       cell: ({ row }) => <StatusTag status={row.getValue('status')} />,
     },
     {
       accessorKey: "dataCriacao",
+      enableGlobalFilter: false,
       header: ({ column }) => orderHeader(column, 'Data de criação'),
       cell: ({ row }) => formatDate(row.getValue('dataCriacao'))
     },
     {
       id: "actions",
+      enableGlobalFilter: false,
       header: () => <div className="text-center w-8">Ações</div>,
       cell: ({ row }) => rowActions(row.original),
     },
@@ -160,17 +167,32 @@ export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrde
   const table = useReactTable({
     data,
     columns,
+    globalFilterFn: 'includesString',
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: onChalgeSearchTerm,
     state: {
       sorting,
-      columnFilters,
+      globalFilter: searchTerm,
     },
   })
+
+  useEffect(() => {
+    table.getColumn('status')?.setFilterValue(statusFilter)
+  }, [table, statusFilter])
+
+  const tableSkeleton = useMemo(() => {
+    return Array
+      .from({ length: columns.length })
+      .map((_, i) => (
+        <TableCell key={i}>
+          <Skeleton className="h-6 w-auto" />
+        </TableCell>
+      ))
+  }, [columns.length])
 
   return (
     <Card className="py-0">
@@ -209,12 +231,16 @@ export function OrdersTable({ data, loading, onEditOrder, onDeleteOrder }: IOrde
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                {loading ? 'Buscando pedidos...' : 'Nenhum pedido encontrado.'}
-              </TableCell>
+              {loading
+                ? tableSkeleton
+                : (<TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Nenhum pedido encontrado.
+                  </TableCell>
+                )
+              }
             </TableRow>
           )}
         </TableBody>

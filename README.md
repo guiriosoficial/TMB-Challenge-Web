@@ -11,6 +11,7 @@ Os detalhes do desafio podem ser vistos no arquivo [POC-TMB](https://github.com/
 Antes de começar, certifique-se de ter os seguintes componentes instalados:
 
 - [Node e NPM](https://nodejs.org/en) (Versão 22)
+- [Docker](https://www.docker.com/products/docker-desktop/) (Recomendado para rodar o Back-end localmente)
 
 ## Configuração do Projeto
 
@@ -118,12 +119,8 @@ docker compose up
 - Abra [http://localhost:3000](http://localhost:3000) para ver o resultado.
 
 ### TODO
-- Remover tratativa de Enum StatusOrder do Front-End
 - Implementar Máscara monetária no dialog de Adiciona/Editar pedidos
-- Implementar ícone de loading na tag de status quando estiver processando
-- Implementar filtro por status
-- Implementar campo de busca
+- Implementar remoção de filtro por Status
+- Implementar Filtro por Valor
 - Implementar paginação
-- Implementar Skeleton Loading na tabela e nos detalhes do pedido
-- Implementar Toasts de erros
 - Bloquear click fora do modal no loading
